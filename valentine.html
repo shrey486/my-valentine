@@ -3,83 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine?</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/inst/confetti.browser.min.js"></script>
+    <title>Valentine Surprise</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body { 
             text-align: center; 
-            font-family: 'Poppins', sans-serif; 
-            background-color: #ffe6e6; 
-            padding-top: 100px; 
+            font-family: 'Arial', sans-serif; 
+            background-color: #1a1a1a; /* फटाके दिसण्यासाठी बॅकग्राउंड काळे केले आहे */
+            color: white;
+            padding-top: 150px; 
             overflow: hidden; 
+            transition: background-color 1s;
         }
-        h1 { color: #d63384; font-size: 2.5rem; transition: 0.5s; }
+        h1 { color: #ff4d94; font-size: 2.5rem; }
         .buttons { margin-top: 50px; }
         button { 
-            padding: 15px 30px; 
-            font-size: 18px; 
+            padding: 15px 35px; 
+            font-size: 20px; 
             cursor: pointer; 
-            border-radius: 10px; 
+            border-radius: 50px; 
             border: none; 
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-weight: bold; 
         }
-        #yesBtn { background-color: #28a745; color: white; margin-right: 20px; }
-        #noBtn { background-color: #dc3545; color: white; position: absolute; transition: 0.1s; }
-        .celebration-text { color: #ff1493; font-size: 3rem; display: none; }
+        #yesBtn { background-color: #ff4d94; color: white; margin-right: 20px; box-shadow: 0 0 20px #ff4d94; }
+        #noBtn { background-color: #444; color: white; position: absolute; transition: 0.1s; }
+        #message { display: none; font-size: 3rem; color: #ffd700; text-shadow: 0 0 20px #ffd700; }
     </style>
 </head>
 <body>
 
-    <h1 id="question">Will you be my Valentine? ❤️</h1>
-    
-    <div id="btnContainer" class="buttons">
-        <button id="yesBtn" onclick="celebrate()">Yes!</button>
-        <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+    <div id="content">
+        <h1 id="question">Will you be my Valentine? ❤️</h1>
+        <div class="buttons">
+            <button id="yesBtn" onclick="startFireworks()">Yes!</button>
+            <button id="noBtn" onmouseover="move()">No</button>
+        </div>
     </div>
 
-    <h1 id="happyMsg" class="celebration-text">Yay! I Love You! 🚀❤️</h1>
+    <h1 id="message">I Love You! 🎆❤️</h1>
 
     <script>
-        // Function to move the "No" button
-        function moveButton() {
-            var x = Math.random() * (window.innerWidth - 100);
-            var y = Math.random() * (window.innerHeight - 100);
-            
-            // To prevent button from going outside the screen
-            document.getElementById('noBtn').style.left = Math.max(10, x) + 'px';
-            document.getElementById('noBtn').style.top = Math.max(10, y) + 'px';
+        function move() {
+            var x = Math.random() * (window.innerWidth - 150);
+            var y = Math.random() * (window.innerHeight - 150);
+            document.getElementById('noBtn').style.left = x + 'px';
+            document.getElementById('noBtn').style.top = y + 'px';
         }
 
-        // Function for Fireworks when "Yes" is clicked
-        function celebrate() {
-            const duration = 5 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        function startFireworks() {
+            document.getElementById('content').style.display = "none";
+            document.getElementById('message').style.display = "block";
+            document.body.style.backgroundColor = "#000"; // Black background for better fireworks
+
+            var duration = 15 * 1000; // 15 सेकंद फटाके चालतील
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
             function randomInRange(min, max) {
-              return Math.random() * (max - min) + min;
+                return Math.random() * (max - min) + min;
             }
 
-            const interval = setInterval(function() {
-              const timeLeft = animationEnd - Date.now();
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
 
-              if (timeLeft <= 0) {
-                return clearInterval(interval);
-              }
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
 
-              const particleCount = 50 * (timeLeft / duration);
-              // Fireworks from left and right
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                var particleCount = 50 * (timeLeft / duration);
+                
+                // खऱ्या फटाक्यांसारखा इफेक्ट (Fireworks Effect)
+                confetti(Object.assign({}, defaults, { 
+                    particleCount, 
+                    origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#ff0000', '#ffd700', '#00ff00', '#00ffff', '#ff00ff', '#ffffff'],
+                    shapes: ['circle'],
+                    scalar: randomInRange(0.8, 1.5)
+                }));
             }, 250);
-
-            // Change the UI
-            document.getElementById('question').style.display = "none";
-            document.getElementById('btnContainer').style.display = "none";
-            document.getElementById('happyMsg').style.display = "block";
         }
     </script>
-
 </body>
 </html>
