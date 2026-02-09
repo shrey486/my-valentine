@@ -1,37 +1,85 @@
 <!DOCTYPE html>
-<html lang="mr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Be My Valentine?</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/inst/confetti.browser.min.js"></script>
     <style>
-        body { text-align: center; font-family: 'Arial', sans-serif; background-color: #ffe6e6; padding-top: 100px; }
-        h1 { color: #d63384; }
+        body { 
+            text-align: center; 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #ffe6e6; 
+            padding-top: 100px; 
+            overflow: hidden; 
+        }
+        h1 { color: #d63384; font-size: 2.5rem; transition: 0.5s; }
         .buttons { margin-top: 50px; }
-        button { padding: 15px 30px; font-size: 18px; cursor: pointer; border-radius: 10px; border: none; }
-        #yesBtn { background-color: #28a745; color: white; }
-        #noBtn { background-color: #dc3545; color: white; position: absolute; transition: 0.2s; }
+        button { 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            border-radius: 10px; 
+            border: none; 
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        #yesBtn { background-color: #28a745; color: white; margin-right: 20px; }
+        #noBtn { background-color: #dc3545; color: white; position: absolute; transition: 0.1s; }
+        .celebration-text { color: #ff1493; font-size: 3rem; display: none; }
     </style>
 </head>
 <body>
 
-    <h1>Will you be my Valentine? ❤️</h1>
+    <h1 id="question">Will you be my Valentine? ❤️</h1>
     
-    <div class="buttons">
-        <button id="yesBtn" onclick="alert('Yay! आय लव्ह यू! ❤️')">Yes!</button>
-        <button id="noBtn" onmouseover="moveButton()">No</button>
+    <div id="btnContainer" class="buttons">
+        <button id="yesBtn" onclick="celebrate()">Yes!</button>
+        <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
     </div>
 
+    <h1 id="happyMsg" class="celebration-text">Yay! I Love You! 🚀❤️</h1>
+
     <script>
+        // Function to move the "No" button
         function moveButton() {
             var x = Math.random() * (window.innerWidth - 100);
             var y = Math.random() * (window.innerHeight - 100);
-            document.getElementById('noBtn').style.left = x + 'px';
-            document.getElementById('noBtn').style.top = y + 'px';
+            
+            // To prevent button from going outside the screen
+            document.getElementById('noBtn').style.left = Math.max(10, x) + 'px';
+            document.getElementById('noBtn').style.top = Math.max(10, y) + 'px';
+        }
+
+        // Function for Fireworks when "Yes" is clicked
+        function celebrate() {
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+              const timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              const particleCount = 50 * (timeLeft / duration);
+              // Fireworks from left and right
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+
+            // Change the UI
+            document.getElementById('question').style.display = "none";
+            document.getElementById('btnContainer').style.display = "none";
+            document.getElementById('happyMsg').style.display = "block";
         }
     </script>
 
 </body>
-
 </html>
-
